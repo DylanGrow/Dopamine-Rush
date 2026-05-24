@@ -1,0 +1,40 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="200" height="200" fill="#ff6b6b" rx="40"/>
+  
+  <!-- Inner circle -->
+  <circle cx="100" cy="100" r="85" fill="#ffffff" opacity="0.95"/>
+  
+  <!-- Main icon - Diamond/Dopamine shape -->
+  <g transform="translate(100, 100)">
+    <!-- Top point -->
+    <circle cx="0" cy="-35" r="8" fill="#ff6b6b"/>
+    
+    <!-- Right point -->
+    <circle cx="35" cy="0" r="8" fill="#ff6b6b"/>
+    
+    <!-- Bottom point -->
+    <circle cx="0" cy="35" r="8" fill="#ff6b6b"/>
+    
+    <!-- Left point -->
+    <circle cx="-35" cy="0" r="8" fill="#ff6b6b"/>
+    
+    <!-- Center circle -->
+    <circle cx="0" cy="0" r="12" fill="#ff6b6b"/>
+    
+    <!-- Connecting lines -->
+    <line x1="0" y1="-27" x2="0" y2="-12" stroke="#ff6b6b" stroke-width="3" stroke-linecap="round"/>
+    <line x1="27" y1="0" x2="12" y2="0" stroke="#ff6b6b" stroke-width="3" stroke-linecap="round"/>
+    <line x1="0" y1="27" x2="0" y2="12" stroke="#ff6b6b" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-27" y1="0" x2="-12" y2="0" stroke="#ff6b6b" stroke-width="3" stroke-linecap="round"/>
+    
+    <!-- Diagonal connections for extra energy -->
+    <line x1="19" y1="-19" x2="8" y2="-8" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+    <line x1="19" y1="19" x2="8" y2="8" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+    <line x1="-19" y1="19" x2="-8" y2="8" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+    <line x1="-19" y1="-19" x2="-8" y2="-8" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  </g>
+  
+  <!-- Border for definition -->
+  <rect width="200" height="200" fill="none" stroke="#ff6b6b" stroke-width="4" rx="40"/>
+</svg>

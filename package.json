@@ -1,0 +1,42 @@
+{
+  "name": "dopamine-rush",
+  "version": "1.0.0",
+  "description": "A privacy-first, offline-first productivity tracker powered by Pomodoro",
+  "main": "app.js",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "npx http-server",
+    "lighthouse": "lighthouse http://localhost:8000 --view",
+    "lighthouse:ci": "lhci autorun",
+    "security:audit": "npm audit --audit-level=moderate",
+    "test:a11y": "pa11y http://localhost:8000"
+  },
+  "keywords": [
+    "productivity",
+    "pomodoro",
+    "focus",
+    "timer",
+    "pwa",
+    "offline",
+    "open-source"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "homepage": "https://github.com/yourusername/dopamine-rush",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/dopamine-rush.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/dopamine-rush/issues"
+  },
+  "devDependencies": {
+    "@lhci/cli": "^0.10.0",
+    "lighthouse": "^10.0.0",
+    "pa11y": "^6.2.0",
+    "http-server": "^14.1.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

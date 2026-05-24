@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dopamine Rush: A productivity tracker powered by Pomodoro. Prioritize, focus, track, and celebrate your wins.">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dopamine Rush">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourusername.github.io/dopamine-rush/">
+    <meta property="og:title" content="Dopamine Rush - Productivity Tracker">
+    <meta property="og:description" content="Master your focus with Pomodoro-powered task tracking and detailed productivity insights.">
+    <meta property="og:image" content="https://yourusername.github.io/dopamine-rush/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dopamine Rush - Productivity Tracker">
+    <meta name="twitter:description" content="Master your focus with Pomodoro-powered task tracking and detailed productivity insights.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Security Headers (via meta tags for GH Pages) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self';">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://yourusername.github.io/dopamine-rush/">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Dopamine Rush",
+        "description": "A productivity tracker powered by Pomodoro technique with priority-first task management",
+        "url": "https://yourusername.github.io/dopamine-rush/",
+        "applicationCategory": "ProductivityApplication",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "creator": {
+            "@type": "Person",
+            "name": "Your Name"
+        }
+    }
+    </script>
+    
+    <title>Dopamine Rush - Productivity Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Prevent theme flicker -->
+    <script>
+        const savedTheme = localStorage.getItem('dopamine-theme');
+        const darkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', savedTheme || (darkTheme ? 'dark' : 'light'));
+    </script>
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2"/>
+                        <path d="M20 10 L28 20 L20 30 L12 20 Z" fill="currentColor" opacity="0.8"/>
+                    </svg>
+                    <h1>Dopamine Rush</h1>
+                </div>
+                <nav class="nav">
+                    <button class="nav-btn active" data-view="tracker">Tracker</button>
+                    <button class="nav-btn" data-view="analytics">Analytics</button>
+                    <button class="nav-btn" data-view="settings">Settings</button>
+                    <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Tracker View -->
+            <section id="trackerView" class="tab-content active">
+                <div class="tracker-container">
+                    <!-- Timer Section -->
+                    <div class="timer-container">
+                        <div class="timer-display">
+                            <div class="timer-mode" id="sessionInfo">Work Session</div>
+                            <div class="timer-progress">
+                                <svg class="progress-ring" viewBox="0 0 120 120">
+                                    <circle class="progress-background" cx="60" cy="60" r="54"/>
+                                    <circle class="progress-fill" cx="60" cy="60" r="54"/>
+                                </svg>
+                                <div class="timer-large" id="timeDisplay" aria-live="polite">25:00</div>
+                            </div>
+                            <div class="session-counter" id="sessionsUntilLongBreakDisplay" style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-top: var(--spacing-sm);">
+                                4 sessions until long break
+                            </div>
+                        </div>
+                        
+                        <div class="timer-controls">
+                            <button class="btn btn-primary" id="startBtn">Start</button>
+                            <button class="btn btn-secondary" id="pauseBtn" disabled>Pause</button>
+                            <button class="btn btn-secondary" id="resetBtn">Reset</button>
+                            <button class="btn btn-secondary" id="skipBtn">Skip</button>
+                        </div>
+                        
+                        <div class="session-counter" style="text-align: center;">
+                            <span id="sessionCount">0</span> sessions completed today
+                        </div>
+                    </div>
+
+                    <!-- Task List Section -->
+                    <div class="tasks-section">
+                        <div class="section-header">
+                            <h2>Priority Tasks</h2>
+                            <button class="btn btn-small" id="addTaskBtn">+ Add Task</button>
+                        </div>
+
+                        <!-- Add Task Form (Hidden by default) -->
+                        <form class="add-task-form" id="addTaskForm" hidden>
+                            <div class="form-group">
+                                <input 
+                                    type="text" 
+                                    id="taskInput" 
+                                    placeholder="What's the most important thing right now?"
+                                    class="form-input"
+                                    maxlength="200"
+                                    required
+                                >
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="prioritySelect">Priority</label>
+                                    <select id="prioritySelect" class="form-input">
+                                        <option value="high">🔴 High</option>
+                                        <option value="medium" selected>🟡 Medium</option>
+                                        <option value="low">🟢 Low</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="estimateInput">Est. Pomodoros</label>
+                                    <input 
+                                        type="number" 
+                                        id="estimateInput" 
+                                        min="1" 
+                                        max="10" 
+                                        value="1"
+                                        class="form-input"
+                                    >
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="saveTaskBtn">Save Task</button>
+                                <button type="button" class="btn btn-secondary" id="cancelTaskBtn">Cancel</button>
+                            </div>
+                        </form>
+
+                        <!-- Task List -->
+                        <div class="tasks-list" id="tasksList">
+                            <!-- Tasks rendered here -->
+                        </div>
+
+                        <div class="empty-state" id="emptyState">
+                            <div class="empty-state-icon">✨</div>
+                            <p>No tasks yet. Add one to get started!</p>
+                        </div>
+                        
+                        <!-- Completed Tasks -->
+                        <div class="completed-tasks-section" style="margin-top: var(--spacing-2xl);">
+                            <div class="section-header">
+                                <h3 style="font-size: var(--font-size-lg);">Completed Tasks</h3>
+                                <button class="btn btn-secondary btn-small" id="toggleCompletedBtn">Show</button>
+                            </div>
+                            <div class="tasks-list" id="completedTasksList" hidden style="margin-top: var(--spacing-md); opacity: 0.7;">
+                                <!-- Completed tasks rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics View -->
+            <section id="analyticsView" class="tab-content">
+                <div class="analytics-container">
+                    <h2>Your Productivity Insights</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalPomodoros">0</div>
+                            <div class="stat-label">Total Pomodoros</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalHours">0</div>
+                            <div class="stat-label">Hours Focused</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="currentStreak">0</div>
+                            <div class="stat-label">Current Streak</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="completionRate">0%</div>
+                            <div class="stat-label">Completion Rate</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Weekly Activity</h3>
+                        <div class="bar-chart" id="weeklyChart">
+                            <!-- Chart rendered here -->
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Priority Breakdown</h3>
+                        <div class="priority-breakdown" id="priorityBreakdown">
+                            <!-- Priority data rendered here -->
+                        </div>
+                    </div>
+
+                    <div class="insights-container">
+                        <h3>Insights</h3>
+                        <div id="insightsList" class="insights-list">
+                            <!-- Dynamic insights rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings View -->
+            <section id="settingsView" class="tab-content">
+                <div class="settings-container">
+                    <h2>Settings</h2>
+                    
+                    <div class="settings-section">
+                        <h3>Pomodoro Configuration</h3>
+                        <div class="form-group">
+                            <label for="workDuration">Work Duration (minutes)</label>
+                            <input 
+                                type="number" 
+                                id="workDuration" 
+                                min="1" 
+                                max="60" 
+                                value="25"
+                                class="form-input"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="breakDuration">Break Duration (minutes)</label>
+                            <input 
+                                type="number" 
+                                id="breakDuration" 
+                                min="1" 
+                                max="30" 
+                                value="5"
+                                class="form-input"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="longBreakDuration">Long Break Duration (minutes)</label>
+                            <input 
+                                type="number" 
+                                id="longBreakDuration" 
+                                min="5" 
+                                max="60" 
+                                value="15"
+                                class="form-input"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="sessionsUntilLongBreak">Sessions Until Long Break</label>
+                            <input 
+                                type="number" 
+                                id="sessionsUntilLongBreak" 
+                                min="2" 
+                                max="10" 
+                                value="4"
+                                class="form-input"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Workflow & Notifications</h3>
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="autoStartBreaks">
+                            <label for="autoStartBreaks">Auto-start breaks</label>
+                        </div>
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="autoStartPomodoros">
+                            <label for="autoStartPomodoros">Auto-start pomodoros</label>
+                        </div>
+                        <div class="form-group checkbox" style="margin-top: var(--spacing-md);">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <label for="soundToggle">Sound notifications</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="volumeSlider">Alarm Volume</label>
+                            <input type="range" id="volumeSlider" min="0" max="100" value="30" class="form-input">
+                        </div>
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="vibrationToggle" checked>
+                            <label for="vibrationToggle">Vibration feedback</label>
+                        </div>
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="desktopNotificationToggle">
+                            <label for="desktopNotificationToggle">Desktop notifications</label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Data Management</h3>
+                        <p class="setting-description">All your data is stored locally in your browser. Never sent to servers.</p>
+                        <button class="btn btn-secondary" id="exportDataBtn">Export Data (JSON)</button>
+                        <button class="btn btn-secondary" id="importDataBtn">Import Data</button>
+                        <input type="file" id="importFile" accept=".json" hidden>
+                        <button class="btn btn-secondary" id="purgeCompletedBtn" style="margin-top: var(--spacing-sm);">Purge Completed Tasks</button>
+                        <button class="btn btn-danger" id="clearDataBtn" style="margin-top: var(--spacing-sm);">Clear All Data</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Dopamine Rush v1.0 • Built with focus 🎯</p>
+        </footer>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="notification-toast" hidden></div>
+
+    <!-- PWA Update Prompt -->
+    <div id="updatePrompt" class="update-prompt" hidden>
+        <p style="margin-bottom: var(--spacing-sm); font-weight: var(--font-weight-600);">Update Available! 🚀</p>
+        <p style="margin-bottom: var(--spacing-md); font-size: var(--font-size-sm); color: var(--color-text-secondary);">A new version of Dopamine Rush is ready.</p>
+        <button class="btn btn-primary" id="updateAppBtn" style="width: 100%;">Refresh to Update</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
